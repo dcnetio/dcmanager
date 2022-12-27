@@ -33,6 +33,7 @@ If need to run dcstorage,you should update the config file "/opt/dcnetio/etc/man
   - 6666  (for dcupgrade)
   - 8081  (for PCCS)
 
+- Please take your notice that dc command must run with sudo
 ```shell
 sudo dc start  {node|chain|all} 
 sudo dc status  {node|chain|all} 
