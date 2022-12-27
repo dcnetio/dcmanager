@@ -72,10 +72,11 @@ func ShowHelp() {
 	fmt.Println("                                         \"chain\": stop dcchain service")
 	fmt.Println("                                         \"pccs\": stop local pccs service")
 	fmt.Println("                                         \"all\": stop dcstorage and dcchain service")
-	fmt.Println(" status {storage|chain|all}              check dc daemon status and  service status")
-	fmt.Println("                                         \"storage\": stop dcstorage service")
-	fmt.Println("                                         \"chain\": stop dcchain service")
-	fmt.Println("                                         \"all\": stop dcstorage and dcchain service")
+	fmt.Println(" status {storage|chain|pccs|all}         check dc daemon status and  service status")
+	fmt.Println("                                         \"storage\": check dcstorage service status")
+	fmt.Println("                                         \"chain\": check dcchain service status")
+	fmt.Println("                                         \"pccs\": check local pccs service status")
+	fmt.Println("                                         \"all\": check dcstorage and dcchain service status")
 	fmt.Println(" log  {storage|chain|upgrade|pccs}       show running log with service_name")
 	fmt.Println("                                         \"storage\":  show dcstorage container running log")
 	fmt.Println("                                         \"chain\":  show dcchain container running log")
@@ -173,11 +174,16 @@ func StatusCommandDeal() {
 	case "chain":
 		chainStatus, _ := checkDcchainStatus()
 		fmt.Println("dcchain status:", chainStatus)
+	case "pccs":
+		pccsStatus, _ := checkPccsStatus()
+		fmt.Println("pccs status:", pccsStatus)
 	case "all":
 		nodeStatus, _ := checkDcnodeStatus()
 		fmt.Println("dcstorage status:", nodeStatus)
 		chainStatus, _ := checkDcchainStatus()
 		fmt.Println("dcchain status:", chainStatus)
+		pccsStatus, _ := checkPccsStatus()
+		fmt.Println("pccs status:", pccsStatus)
 	default:
 		ShowHelp()
 	}
@@ -405,6 +411,28 @@ func checkDcDeamonStatusDc() (status bool, err error) {
 		return
 	}
 	status = true
+	return
+}
+
+// 获取pccs的运行状态
+func checkPccsStatus() (status bool, err error) {
+	status = false
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return
+	}
+	defer cli.Close()
+	//查看pccs容器是否存在
+	resp, err := cli.ContainerInspect(context.Background(), pccsContainerName)
+	if err != nil {
+		return
+	} else if resp.State.Running { //容器存在且正在运行，检查能否正常访问
+		_, err = util.HttpGetWithoutCheckCert("https://localhost:8081/sgx/certification/v3/rootcacrl")
+		if err != nil { //访问失败
+			return
+		}
+		status = true
+	}
 	return
 }
 
