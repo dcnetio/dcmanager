@@ -27,10 +27,6 @@ _dc()
                 COMPREPLY=($(compgen -W "storage chain pccs upgrade" -- $cur))
                 return 0
                 ;;
-            uniqueid)
-                COMPREPLY=($(compgen -W "storage upgrade" -- $cur))
-                return 0
-                ;; 
         esac
         return 0
     fi
