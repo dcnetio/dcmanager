@@ -103,7 +103,7 @@ func StartCommandDeal() {
 	case "storage":
 		err := startDcStorageNode()
 		if err == nil {
-			showContainerLog(nodeContainerName)
+			showContainerLog(nodeContainerName, 0)
 		} else {
 			log.Error(err)
 		}
@@ -111,19 +111,19 @@ func StartCommandDeal() {
 	case "chain":
 		err := startDcChain()
 		if err == nil {
-			showContainerLog(chainContainerName)
+			showContainerLog(chainContainerName, 0)
 		}
 	case "pccs":
 		err := runPccsInDocker()
 		if err == nil {
-			showContainerLog(pccsContainerName)
+			showContainerLog(pccsContainerName, 0)
 		}
 
 	case "all":
 		startDcChain()
 		err := startDcStorageNode()
 		if err == nil {
-			showContainerLog(nodeContainerName)
+			showContainerLog(nodeContainerName, 0)
 		} else {
 			log.Error(err)
 		}
@@ -197,13 +197,13 @@ func LogCommandDeal() { //
 	}
 	switch os.Args[2] {
 	case "storage":
-		showContainerLog(nodeContainerName)
+		showContainerLog(nodeContainerName, 100)
 	case "chain":
-		showContainerLog(chainContainerName)
+		showContainerLog(chainContainerName, 100)
 	case "upgrade":
-		showContainerLog(upgradeContainerName)
+		showContainerLog(upgradeContainerName, 100)
 	case "pccs":
-		showContainerLog(pccsContainerName)
+		showContainerLog(pccsContainerName, 100)
 	default:
 		ShowHelp()
 	}
@@ -1203,13 +1203,13 @@ func runPccsInDocker() (err error) {
 }
 
 // show Container log
-func showContainerLog(containerName string) {
+func showContainerLog(containerName string, tnum int) {
 	containerId, err := findContainerIdByName(containerName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "find container id error: %v\n", err)
 		return
 	}
-	err = showLogsForContainer(containerId)
+	err = showLogsForContainer(containerId, tnum)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "show logs error: %v\n", err)
 		return
@@ -1217,20 +1217,37 @@ func showContainerLog(containerName string) {
 }
 
 // 打印docker中指定容器ID的日志
-func showLogsForContainer(containerId string) (err error) {
+func showLogsForContainer(containerId string, tnum int) error {
 	cli, _ := client.NewClientWithOpts(client.FromEnv)
-	reader, err := cli.ContainerLogs(context.Background(), containerId, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: "100"})
-	if err != nil {
-		return
-	}
 	defer cli.Close()
-	defer reader.Close()
-	_, err = io.Copy(os.Stdout, reader)
-	if err != nil && err != io.EOF {
-		return
+	if tnum == 0 { //打印容器最新开始运行的日志
+		execResp, err := cli.ContainerInspect(context.Background(), containerId)
+		if err != nil { //容器不存在
+			return err
+		}
+		reader, err := cli.ContainerLogs(context.Background(), containerId, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Since: execResp.State.StartedAt})
+		if err != nil {
+			return err
+		}
+		defer reader.Close()
+		_, err = io.Copy(os.Stdout, reader)
+		if err != nil && err != io.EOF {
+			return err
+		}
+
+	} else {
+		reader, err := cli.ContainerLogs(context.Background(), containerId, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: fmt.Sprintf("%d", tnum)})
+		if err != nil {
+			return err
+		}
+		defer reader.Close()
+		_, err = io.Copy(os.Stdout, reader)
+		if err != nil && err != io.EOF {
+			return err
+		}
 	}
 	handleInterruptSignal()
-	return
+	return nil
 }
 
 // find container id by Name
