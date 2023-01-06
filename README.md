@@ -18,11 +18,13 @@ Official dc node service for running dc protocol.
 ## Install dependencies
 
 ### Install dc service
+
 ```shell
 sudo ./install.sh # Use 'sudo ./install.sh --registry cn' to accelerate installation in some areas
 ```
 
 ### Config service
+
 If need to run dcstorage,you should update the config file "/opt/dcnetio/etc/manage_config.yaml",and set pccsKey value with PCCS API key you subscribe from intel.
 
 ### Run service
@@ -34,6 +36,7 @@ If need to run dcstorage,you should update the config file "/opt/dcnetio/etc/man
   - 8081  (for PCCS)
 
 - Please take your notice that dc command must run with sudo
+  
 ```shell
 sudo dc start  {node|chain|all} 
 sudo dc status  {node|chain|all} 
