@@ -1,0 +1,44 @@
+#!/bin/bash
+# complete dc
+_dc()
+{
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    if [ $COMP_CWORD -eq 1 ]; then
+      COMPREPLY=($(compgen -W "config start stop status log uniqueid peerinfo memusage blockgc checksum get rotate-keys pccs_api_key help" -- $cur))
+        return 0
+    fi
+
+    local prev=${COMP_WORDS[COMP_CWORD-1]}
+    if [ $COMP_CWORD -eq 2 ]; then
+        case "$prev" in
+            start)
+                COMPREPLY=($(compgen -W "storage chain pccs all" -- $cur))
+                return 0
+                ;;
+            stop)
+                COMPREPLY=($(compgen -W "storage chain pccs all" -- $cur))
+                return 0
+                ;;
+            status)
+                COMPREPLY=($(compgen -W "storage chain all" -- $cur))
+                return 0
+                ;;
+            log)
+                COMPREPLY=($(compgen -W "storage chain pccs upgrade" -- $cur))
+                return 0
+                ;;
+        esac
+        return 0
+    fi
+    local prev2=${COMP_WORDS[COMP_CWORD-2]}
+    if [ $COMP_CWORD -eq 3 ]; then
+        case "$prev2" in
+            get)
+             COMPREPLY=($(compgen -W "--name --timeout --secret" -- $cur))
+             return 0
+            ;;
+        esac
+    fi
+}
+complete -F _dc dc
+ 

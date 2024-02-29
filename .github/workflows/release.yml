@@ -1,0 +1,73 @@
+name: release
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ 'config/version.json' ]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20.x
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: version
+        name: Determine version
+        run: echo "version=$(jq -r .version config/version.json)" >> $GITHUB_OUTPUT
+      - id: pr
+        name: Determine if this commit is a merged PR (if we're not on a default branch)
+        if: github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions-ecosystem/action-get-merged-pull-request@59afe90821bb0b555082ce8ff1e36b03f91553d9 # v1.0.1
+        with:
+          github_token: ${{ github.token }}
+      - id: labels
+        env:
+          LABELS: ${{ steps.pr.outputs.labels }}
+        run: echo "labels=$(jq -nc 'env.LABELS | split("\n")')" >> $GITHUB_OUTPUT
+      - id: tag
+        name: Check if tag already exists
+        if: steps.version.outputs.version != ''   && 
+            github.ref == format('refs/heads/{0}', github.event.repository.default_branch) 
+        uses: mukunku/tag-exists-action@9298fbcc409758ba624a0ae16b83df86637cb8ce # v1.2.0
+        with:
+          tag: ${{ steps.version.outputs.version }}
+      - name: Build dc
+        run: go build -ldflags '-s -w' -o ./install/bin/dc ./dc/main.go
+      - name: Create release
+        if: steps.version.outputs.version != '' && steps.tag.outputs.exists == 'false' && (
+            github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+            contains(fromJSON(steps.labels.outputs.labels), 'release'))
+        uses: galargh/action-gh-release@25b3878b4c346655a4d3d9bea8b76638f64743cf # https://github.com/softprops/action-gh-release/pull/316
+        with:
+            draft: false
+            tag_name: ${{ steps.version.outputs.version }}
+            generate_release_notes: true
+            target_commitish: ${{ github.sha }}
+      - name: Rename install to dc-${{ steps.version.outputs.version }}
+        if: steps.version.outputs.version != '' && steps.tag.outputs.exists == 'false' && 
+            github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        run: mv install dc-${{ steps.version.outputs.version }} 
+      - name: Compress action step
+        if: steps.version.outputs.version != '' && steps.tag.outputs.exists == 'false' && 
+            github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: a7ul/tar-action@v1.1.3
+        id: compress
+        with:
+          command: c
+          cwd: .
+          files: |
+            ./dc-${{ steps.version.outputs.version }}
+          outPath: ./dc-${{ steps.version.outputs.version }}.tgz
+      - name: Publish
+        if: steps.version.outputs.version != '' && steps.tag.outputs.exists == 'false' && 
+            github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: softprops/action-gh-release@v1
+        with:
+         tag_name: ${{ steps.version.outputs.version }}
+         files: |
+            ./dc-${{ steps.version.outputs.version }}.tgz
+     

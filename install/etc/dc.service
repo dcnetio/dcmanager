@@ -1,0 +1,9 @@
+[Unit]
+After=network.target
+
+[Service]
+ExecStart=/opt/dcnetio/bin/dc upgrade daemon
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,13 @@
+chainNodeName:  
+validatorFlag:  # "enable" or "disable"
+chainSyncMode: 
+chainWsUrl: ws://127.0.0.1:9944
+chainRpcListenPort: 9944
+pccsKey: 
+chainImage: ghcr.io/dcnetio/dcchain:latest
+nodeImage: ghcr.io/dcnetio/dcstorage:latest
+upgradeImage: ghcr.io/dcnetio/dcupgrade:latest
+pccsImage: ghcr.io/dcnetio/pccs:latest
+registry: cn
+chainBootNode:
+chainExposeFlag:   # "enable" or "disable"
