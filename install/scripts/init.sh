@@ -349,47 +349,47 @@ function install_docker_images(){
 }
 
 
-## 4.0-cn Download docker image from ghcr.nju.edu.cn
+## 4.0-cn Download docker image from registry.cn-hangzhou.aliyuncs.com/dcproxy
 function install_docker_images_cn(){
     echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  4.0   get dcnetio/pccs newest tag' ${NC}
     get_docker_newesttag_list dcnetio/pccs
-    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  4.1   pull image from ghcr.nju.edu.cn/dcnetio/pccs:${newest_docker_tag}" ${NC}
+    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  4.1   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/pccs:${newest_docker_tag}" ${NC}
     echo
-    docker pull ghcr.nju.edu.cn/dcnetio/pccs:$newest_docker_tag
+    docker pull registry.cn-hangzhou.aliyuncs.com/dcproxy/pccs:$newest_docker_tag
     if [ $? -ne 0 ]; then
-        echo -e ${RED} "4.2   pull image from ghcr.nju.edu.cn/dcnetio/pccs failed" ${NC}  && exit
+        echo -e ${RED} "4.2   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/pccs failed" ${NC}  && exit
     fi
-    sudo sed -i "s/pccsImage:.*/pccsImage: ghcr.nju.edu.cn\/dcnetio\/pccs:${newest_docker_tag}/" $1/manage_config.yaml
+    sudo sed -i "s/pccsImage:.*/pccsImage: registry.cn-hangzhou.aliyuncs.com\/dcproxy\/pccs:${newest_docker_tag}/" $1/manage_config.yaml
     echo
     echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  4.3   get dcnetio/dcchain newest tag' ${NC}
     get_docker_newesttag_list dcnetio/dcchain
-    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  4.4   pull image from ghcr.nju.edu.cn/dcnetio/dcchain:${newest_docker_tag}" ${NC}
+    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  4.4   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/dcchain:${newest_docker_tag}" ${NC}
     echo
-    docker pull ghcr.nju.edu.cn/dcnetio/dcchain:$newest_docker_tag
+    docker pull registry.cn-hangzhou.aliyuncs.com/dcproxy/dcchain:$newest_docker_tag
     if [ $? -ne 0 ]; then
-        echo -e ${RED} "4.5   pull image from ghcr.nju.edu.cn/dcnetio/dcchain failed" ${NC}  && exit 
+        echo -e ${RED} "4.5   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/dcchain failed" ${NC}  && exit 
     fi
-    sudo sed -i "s/chainImage:.*/chainImage: ghcr.nju.edu.cn\/dcnetio\/dcchain:${newest_docker_tag}/" $1/manage_config.yaml
+    sudo sed -i "s/chainImage:.*/chainImage: registry.cn-hangzhou.aliyuncs.com\/dcproxy\/dcchain:${newest_docker_tag}/" $1/manage_config.yaml
     echo
     echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  4.6   get dcnetio/dcupgrade newest tag' ${NC}
     get_docker_newesttag_list dcnetio/dcupgrade
-    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  4.7   pull image from ghcr.nju.edu.cn/dcnetio/dcupgrade:${newest_docker_tag}" ${NC}
+    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  4.7   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/dcupgrade:${newest_docker_tag}" ${NC}
     echo
-    docker pull ghcr.nju.edu.cn/dcnetio/dcupgrade:$newest_docker_tag
+    docker pull registry.cn-hangzhou.aliyuncs.com/dcproxy/dcupgrade:$newest_docker_tag
     if [ $? -ne 0 ]; then
-        echo -e ${RED} "4.8   pull image from ghcr.nju.edu.cn/dcnetio/dcupgrade failed" ${NC}  && exit 
+        echo -e ${RED} "4.8   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/dcupgrade failed" ${NC}  && exit 
     fi
-    sudo sed -i "s/upgradeImage:.*/upgradeImage: ghcr.nju.edu.cn\/dcnetio\/dcupgrade:${newest_docker_tag}/" $1/manage_config.yaml
+    sudo sed -i "s/upgradeImage:.*/upgradeImage: registry.cn-hangzhou.aliyuncs.com\/dcproxy\/dcupgrade:${newest_docker_tag}/" $1/manage_config.yaml
     echo
     echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  4.9   get dcnetio/dcstorage newest tag' ${NC}
     get_docker_newesttag_list dcnetio/dcstorage
-    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  5.0   pull image from ghcr.nju.edu.cn/dcnetio/dcstorage:${newest_docker_tag}" ${NC}
+    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') ">>  5.0   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/dcstorage:${newest_docker_tag}" ${NC}
     echo
-    docker pull ghcr.nju.edu.cn/dcnetio/dcstorage:$newest_docker_tag
+    docker pull registry.cn-hangzhou.aliyuncs.com/dcproxy/dcstorage:$newest_docker_tag
     if [ $? -ne 0 ]; then
-        echo -e ${RED} "4.3   pull image from ghcr.nju.edu.cn/dcnetio/dcstorage failed" ${NC}  && exit 
+        echo -e ${RED} "4.3   pull image from registry.cn-hangzhou.aliyuncs.com/dcproxy/dcstorage failed" ${NC}  && exit 
     fi
-    sudo sed -i "s/nodeImage:.*/nodeImage: ghcr.nju.edu.cn\/dcnetio\/dcstorage:${newest_docker_tag}/" $1/manage_config.yaml
+    sudo sed -i "s/nodeImage:.*/nodeImage: registry.cn-hangzhou.aliyuncs.com\/dcproxy\/dcstorage:${newest_docker_tag}/" $1/manage_config.yaml
     echo
 
 }

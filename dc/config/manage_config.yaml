@@ -4,16 +4,11 @@ chainSyncMode: full
 chainWsUrl: ws://127.0.0.1:9944
 chainRpcListenPort: 9944
 pccsKey: 07ca6580ba9249569b15b1f7b1a34273
-chainImage: ghcr.io/dcnetio/dcchain:0.0.1
-nodeImage: ghcr.io/dcnetio/dcstorage:0.0.1
-upgradeImage: ghcr.io/dcnetio/dcupgrade:0.1.6
+chainImage: ghcr.io/dcnetio/dcchain:0.1.4
+nodeImage: ghcr.io/dcnetio/dcstorage:0.1.2
+upgradeImage: ghcr.io/dcnetio/dcupgrade:0.1.7
 pccsImage: ghcr.io/dcnetio/pccs:0.1.5
 chainBootNode: "" 
 chainExposeFlag: ""  # "enable" or "disable"
 newVersion:
-  originUrl: ghcr.io/dcnetio/dcstorage:0.0.10
-  mirrorUrl: ghcr.nju.edu.cn/dcnetio/dcstorage:0.0.10
-  enclaveId: f8bf69d39d22984565f7c948f1fd8bc205687bf8fd9794f143c3515e5dccda58
-  version: 0.0.10
   mirrCids:
-    - bafybeifm5o7rjhf3u2mfcm3l43yab6qm7cwtmxik53c2o2estjbouzw6xq
