@@ -218,42 +218,120 @@ function install_docker(){
         echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.1   install docker dependencies' ${NC}
                 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
         echo
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.2   set up the stable repository' ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.2   add docker’s official GPG key' ${NC}
+                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.3   set up the stable repository' ${NC}
             sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"	
         echo
         echo
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.3   update the packages' ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.4   update the packages' ${NC}
             sudo apt-get update -y
         echo
         echo
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.4   checks install from the Docker repo instead of the default Ubuntu repo' ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.5   checks install from the Docker repo instead of the default Ubuntu repo' ${NC}
             sudo apt-cache policy docker-ce 
         echo
         echo
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.5   installing dcoker through docker-ce' ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.6   installing dcoker through docker-ce' ${NC}
             sudo apt-get install docker-ce -y 
         echo
         echo
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.6   installing docker-compose' ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.7   installing docker-compose' ${NC}
             sudo apt-get install docker-compose -y
         echo
         echo
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.7   adds your username to the docker group'  ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.8   adds your username to the docker group'  ${NC}
             sudo usermod -a -G docker ${USER} 
             name=$(who am i | awk '{print $1}')
             sudo usermod -a -G docker $name
-        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.8   docker successfully installed' ${NC}
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.9   docker successfully installed' ${NC}
         echo
         echo
     else
        #Determine whether docker compose already exists, if not, install it
         if ! [ -x "$(command -v docker-compose)" ]; then
             echo
-            echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.3   update the packages' ${NC}
+            echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.4   update the packages' ${NC}
                 sudo apt-get update -y
             echo
             echo
-            echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.6   installing docker-compose' ${NC}
+            echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.7   installing docker-compose' ${NC}
+                sudo apt-get install docker-compose -y
+            echo
+            echo
+        fi
+        echo
+        echo
+                echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.9  DOCKER ALREADY INSTALLED'${NC}
+        echo
+        echo
+    fi
+    #Configure Docker to start on boot with systemd
+    systemctl enable docker.service
+    systemctl enable containerd.service
+    #if docker is not running, start docker
+    if ! systemctl is-active --quiet docker.service; then
+        systemctl start docker.service
+    fi
+   #if containerd is not running, start containerd
+    if ! systemctl is-active --quiet containerd.service; then
+        systemctl start containerd.service
+    fi
+}
+
+
+
+## 3.0 docker installation
+function install_docker_cn(){
+    #remove  docker installed by snap, if any.Because snap docker will cause file not exist error when run docker on bind mount
+    sudo snap remove docker
+    #docker_installation
+    if [ ! -x /var/lib/docker ] || [ ! -x /usr/bin/docker ]; then
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.0   INSTALLING docker' ${NC}
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.1   install docker dependencies' ${NC}
+                sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.2   add docker’s official GPG key' ${NC}
+                curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.3   set up the stable repository' ${NC}
+            sudo add-apt-repository "deb [arch=arm64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+        echo
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.4   update the packages' ${NC}
+            sudo apt-get update -y
+        echo
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.5   checks install from the Docker repo instead of the default Ubuntu repo' ${NC}
+            sudo apt-cache policy docker-ce 
+        echo
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.6   installing dcoker through docker-ce' ${NC}
+            sudo apt-get install docker-ce -y 
+        echo
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.7   installing docker-compose' ${NC}
+            sudo apt-get install docker-compose -y
+        echo
+        echo
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.8   adds your username to the docker group'  ${NC}
+            sudo usermod -a -G docker ${USER} 
+            name=$(who am i | awk '{print $1}')
+            sudo usermod -a -G docker $name
+        echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.9   docker successfully installed' ${NC}
+        echo
+        echo
+    else
+       #Determine whether docker compose already exists, if not, install it
+        if ! [ -x "$(command -v docker-compose)" ]; then
+            echo
+            echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.4   update the packages' ${NC}
+                sudo apt-get update -y
+            echo
+            echo
+            echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  3.7   installing docker-compose' ${NC}
                 sudo apt-get install docker-compose -y
             echo
             echo
@@ -287,7 +365,7 @@ function get_docker_newesttag_list(){
    #get  fake NOOP token from github
    noop_token=$(curl -s https://ghcr.io/token\?scope\="repository:$1:pull" | jq -r .token)
    docker_tag_list=$(curl -H "Authorization: Bearer $noop_token" https://ghcr.io/v2/$1/tags/list  | jq -r '.tags[]')
-   if [ $? -ne 0 ]; then
+if [ $? -ne 0 ]; then
         echo -e ${RED} " get docker tag list from ghcr.io failed" ${NC}  && exit 
    fi
    #get newest docker tag

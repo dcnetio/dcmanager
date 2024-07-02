@@ -128,10 +128,12 @@ sudo ln -s $installbindir/dc   /usr/bin/dc
 
 install_base_depenencies $region
 install_sgx_env
-install_docker
+
 if [ $region = "cn" ]; then
+    install_docker_cn
     install_docker_images_cn $installetcdir
 else
+    install_docker
     install_docker_images  $installetcdir
 fi
 #set command completion
