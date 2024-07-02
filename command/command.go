@@ -19,7 +19,7 @@ import (
 	"github.com/dcnetio/dc/blockchain"
 	"github.com/dcnetio/dc/config"
 	"github.com/dcnetio/dc/util"
-	"github.com/dcnetio/go-substrate-rpc-client/types/codec"
+	"github.com/dcnetio/go-substrate-rpc-client/v4/types/codec"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
@@ -1014,7 +1014,7 @@ func stopUpgradeInDocker() {
 // stop dcchain in docker
 func stopDcchainInDocker() {
 	ctx := context.Background()
-	util.StopContainer(ctx, chainContainerName, 10)
+	util.StopContainer(ctx, chainContainerName, 60)
 }
 
 // stop dcpccs in docker

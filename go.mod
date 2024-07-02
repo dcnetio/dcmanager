@@ -1,11 +1,11 @@
 module github.com/dcnetio/dc
 
-go 1.20
+go 1.21
 
 require (
 	github.com/ChainSafe/go-schnorrkel v1.0.0
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/dcnetio/go-substrate-rpc-client v1.1.5
+	github.com/dcnetio/go-substrate-rpc-client/v4 v4.2.3
 	github.com/dcnetio/gothreads-lib v0.1.14
 	github.com/dcnetio/ipfs-lite v1.1.10
 	github.com/gogo/protobuf v1.3.2
@@ -30,6 +30,7 @@ require (
 	github.com/quic-go/qtls-go1-20 v0.3.4 // indirect
 	github.com/quic-go/quic-go v0.39.4 // indirect
 	github.com/quic-go/webtransport-go v0.6.0 // indirect
+	github.com/vedhavyas/go-subkey/v2 v2.0.0 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
 	go.uber.org/mock v0.3.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
@@ -74,7 +75,6 @@ require (
 	github.com/opencontainers/runtime-spec v1.1.0 // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
 	github.com/raulk/go-watchdog v1.3.0 // indirect
-	github.com/vedhavyas/go-subkey v1.0.4 // indirect
 	go.opentelemetry.io/otel v1.16.0 // indirect
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	go.uber.org/dig v1.17.1 // indirect

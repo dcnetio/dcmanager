@@ -5,7 +5,7 @@ if [ $(id -u) -ne 0 ]; then
     echo "Please run with sudo!"
     exit 1
 fi
-if [  -d $installdir ]; then
+if [ -d $installdir ] && [ -d $installdir/bin ]; then
     echo "Uninstalling dc..."
     echo "Stopping dc..."
     $installdir/bin/dc stop all

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/dcnetio/dc/config"
-	gsrpc "github.com/dcnetio/go-substrate-rpc-client"
-	"github.com/dcnetio/go-substrate-rpc-client/types"
-	"github.com/dcnetio/go-substrate-rpc-client/types/codec"
+	gsrpc "github.com/dcnetio/go-substrate-rpc-client/v4"
+	"github.com/dcnetio/go-substrate-rpc-client/v4/types"
+	"github.com/dcnetio/go-substrate-rpc-client/v4/types/codec"
 	"github.com/dcnetio/gothreads-lib/core/thread"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/libp2p/go-libp2p/core/crypto"
