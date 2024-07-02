@@ -45,7 +45,7 @@ var RunningConfig = &DcManageConfig{
 	ChainImage:           "ghcr.io/dcnetio/dcchain:latest",
 	NodeImage:            "ghcr.io/dcnetio/dcstorage:latest",
 	UpgradeImage:         "ghcr.io/dcnetio/dcupgrade:latest",
-	TeeReportServerImage: "ghcr.io/dcnetio/dcteereportserver:0.0.3",
+	TeeReportServerImage: "ghcr.io/dcnetio/dcteereportserver:0.1.2",
 	PccsImage:            "ghcr.io/dcnetio/pccs:latest",
 	Registry:             "ghcr.io/dcnetio",
 	ChainBootNode:        "",

@@ -1001,26 +1001,26 @@ func startTeeReportServerDocker() (err error) {
 // stopDcnodeInDocker stop dcstorage in docker
 func stopDcnodeInDocker() (err error) {
 	ctx := context.Background()
-	err = util.StopContainer(ctx, nodeContainerName)
+	err = util.StopContainer(ctx, nodeContainerName, 60)
 	return
 }
 
 // stop dcupgrade in docker
 func stopUpgradeInDocker() {
 	ctx := context.Background()
-	util.StopContainer(ctx, upgradeContainerName)
+	util.StopContainer(ctx, upgradeContainerName, 10)
 }
 
 // stop dcchain in docker
 func stopDcchainInDocker() {
 	ctx := context.Background()
-	util.StopContainer(ctx, chainContainerName)
+	util.StopContainer(ctx, chainContainerName, 10)
 }
 
 // stop dcpccs in docker
 func stopPccsInDocker() {
 	ctx := context.Background()
-	util.StopContainer(ctx, pccsContainerName)
+	util.StopContainer(ctx, pccsContainerName, 10)
 
 }
 

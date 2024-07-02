@@ -289,7 +289,7 @@ func StartContainer(ctx context.Context, containerName string, removeOldFlag boo
 }
 
 // stop container
-func StopContainer(ctx context.Context, containerName string) (err error) {
+func StopContainer(ctx context.Context, containerName string, waitTimeout int) (err error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return
@@ -311,7 +311,6 @@ func StopContainer(ctx context.Context, containerName string) (err error) {
 	if containerId != "" {
 		fmt.Printf("stopping %s  ...\r\n", containerName)
 		log.Infof("stopping %s  ...", containerName)
-		waitTimeout := 60 // 60s
 		if err = cli.ContainerStop(ctx, containerId, container.StopOptions{Timeout: &waitTimeout}); err != nil {
 			fmt.Fprintf(os.Stderr, "stop %s  fail,err: %v\r\n", containerName, err)
 			log.Infof("stop %s  fail,err: %v", containerName, err)

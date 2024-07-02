@@ -153,6 +153,6 @@ echo $ENDTIME '>>  end dc  node install...'
 start_seconds=$(date --date="$BEGINTIME" +%s);
 end_seconds=$(date --date="$ENDTIME" +%s);
 echo "install time : "$((end_seconds-start_seconds))"s"
-echo -e ${GREEN} "Please run '. /etc/bash_completion & newgrp docker & newgrp dcnetio' to enable command completion and refresh user group" ${NC}
+echo -e ${GREEN} "Please run '. /etc/bash_completion; newgrp docker; newgrp dcnetio' to enable command completion and refresh user group" ${NC}
 
 
