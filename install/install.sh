@@ -116,6 +116,7 @@ fi
 
 #set image registry
 if [ $region  = "cn" ]; then
+    sudo rm /etc/apt/sources.list.d/archive_uri-https_download_docker_com_linux_ubuntu-jammy.list
     sudo sed -i "s/registry:.*/registry: cn/" $installetcdir/manage_config.yaml
 else
     sudo sed -i "s/registry:.*/registry: en/" $installetcdir/manage_config.yaml
