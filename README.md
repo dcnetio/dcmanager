@@ -64,7 +64,7 @@ sudo ./install.sh # Use 'sudo ./install.sh --registry cn' to accelerate installa
 
 - Please make sure the following ports are not occupied before starting：
   - 60666 9944   (for DCChain)
-  - 6667 4006 (for DCStorage)
+  - 6667 4006 4016 4026(for DCStorage)
   - 6666  (for DCUpgrade)
   - 8081  (for PCCS)
 
