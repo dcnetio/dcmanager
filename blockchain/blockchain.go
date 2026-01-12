@@ -231,14 +231,17 @@ func GetPeerAddrInfo(peerid string, chainApi *gsrpc.SubstrateAPI, meta *types.Me
 	if err != nil {
 		return
 	}
-	if !ok {
+	if !ok || len(blockPeerInfo.Ip_address) == 0 {
 		return
 	}
-	pAddrInfo, err := peer.AddrInfoFromString(string(blockPeerInfo.Ip_address))
-	if err != nil {
-		return
+	ipAddresses := strings.Split(string(blockPeerInfo.Ip_address), ",")
+	for _, ipAddr := range ipAddresses {
+		pAddrInfo, err1 := peer.AddrInfoFromString(ipAddr)
+		if err1 != nil {
+			continue
+		}
+		return *pAddrInfo, nil
 	}
-	addrInfo = *pAddrInfo
 	return
 
 }

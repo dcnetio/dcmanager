@@ -445,7 +445,7 @@ func GetFileFromIpfsCommandDeal() {
 	//Query the node where the file exists from the blockchain based on cid
 	fileSize, addrInfos, err := blockchain.GetPeerAddrsForCid(cid)
 	if err != nil || len(addrInfos) == 0 {
-		fmt.Fprintf(os.Stderr, "Failed to get file with cid:%s \n", cid)
+		fmt.Fprintf(os.Stderr, "Failed to get file with cid:%s ,err:%v\n", cid, err)
 		return
 	}
 	tObj := &util.TransmitObj{
@@ -1383,6 +1383,9 @@ func pullDcStorageNodeImage(image string) (err error) {
 	out, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
 	if err != nil {
 		log.Errorf("pullDcStorageNodeImage-ImagePull fail,err: %v", err)
+		if out != nil {
+			out.Close()
+		}
 		return
 	}
 	defer out.Close()

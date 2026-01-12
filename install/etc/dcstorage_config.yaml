@@ -8,7 +8,7 @@ repo:
   disks: /opt/dcnetio/disks #"Repo location" mainly stores the official storage data of the DC platform
   ssd: /opt/dcnetio/data/dcstorage #"ssdRepo location,主要存放快速访问的相关数据" 
 addrs:
-  host: /ip4/0.0.0.0/tcp/4006/ip6/::/tcp/4006 #"Libp2p host bind address"  
+  host:  #"Libp2p host bind address"  
   exMapPort:  #The external port configured for port mapping on the router
   announceAddr:  # "Libp2p announce address" is mainly used to tell the chain through which address the node can be accessed. If not configured, it will be obtained automatically.
   announceRelayAddr: false #Whether to use the relay address as the node address as well. This function can only be enabled when the network cannot be accessed by the external network due to special network configuration.

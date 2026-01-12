@@ -50,7 +50,7 @@ function install_base_depenencies(){
     fi
     ## 1.4 update apt-get
     echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  1.4.   sudo apt-get update' ${NC}
-    sudo apt-get update || 
+    sudo apt-get update
     if [ $? -ne 0 ]; then
         echo -e ${RED} "1.4.   sudo apt-get update failed" ${NC}  && exit 
     fi
@@ -89,10 +89,10 @@ function install_base_depenencies(){
     echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  1.10.   sudo apt-get  install  jq' ${NC}
     sudo apt-get -y install  jq 
     ## 1.11 install curl
-    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  1.10.   sudo apt-get  install  curl' ${NC}
+    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  1.11.   sudo apt-get  install  curl' ${NC}
     sudo apt-get -y install  curl 
-     ## 1.11 install wget
-    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  1.10.   sudo apt-get  install  wget' ${NC}
+     ## 1.12 install wget
+    echo -e ${GREEN} $(date '+%Y-%m-%d %H:%M:%S') '>>  1.12.   sudo apt-get  install  wget' ${NC}
     sudo apt-get -y install  wget 
 
 }
@@ -111,8 +111,7 @@ function install_sgx_env(){
             fi
             result=$(echo '381c32da43ad500bac104601341c8f53f63e4e6f507259b463fa920b3e67bc4f sgx_linux_x64_driver_1.41.bin' | sha256sum -c | grep -e 'OK' -e '成功')
             if [[ $result = "" ]]; then 
-            echo -e ${RED} "2.0. sgx_linux_x64_driver_1.41.bin checksum failed" ${NC} && exit  ${NC}
-            exit 
+                echo -e ${RED} "2.0. sgx_linux_x64_driver_1.41.bin checksum failed" ${NC} && exit 
             fi
             chmod +x sgx_linux_x64_driver_1.41.bin
             sudo ./sgx_linux_x64_driver_1.41.bin
@@ -364,14 +363,31 @@ function get_docker_newesttag_list(){
    
    #get  fake NOOP token from github
    noop_token=$(curl -s https://ghcr.io/token\?scope\="repository:$1:pull" | jq -r .token)
-   docker_tag_list=$(curl -H "Authorization: Bearer $noop_token" https://ghcr.io/v2/$1/tags/list  | jq -r '.tags[]')
-if [ $? -ne 0 ]; then
-        echo -e ${RED} " get docker tag list from ghcr.io failed" ${NC}  && exit 
+   if [ $? -ne 0 ] || [ -z "$noop_token" ] || [ "$noop_token" == "null" ]; then
+        echo -e ${RED} "Failed to get token from ghcr.io" ${NC}
+        newest_docker_tag=$(curl -s https://ghcr.dcnetio.cloud/$1)
+        return
    fi
-   #get newest docker tag
-   newest_docker_tag=$(echo $docker_tag_list | awk '{print $NF}')
-   if newest_docker_tag=""; then # get docker tag list from tags.dcnetio.cloud
-    newest_docker_tag=$(curl -s https://ghcr.dcnetio.cloud/$1)
+   
+   #get docker tag list and sort by version
+   docker_tag_list=$(curl -s -H "Authorization: Bearer $noop_token" https://ghcr.io/v2/$1/tags/list | jq -r '.tags[]')
+   if [ $? -ne 0 ] || [ -z "$docker_tag_list" ]; then
+        echo -e ${RED} "Failed to get docker tag list from ghcr.io" ${NC}
+        newest_docker_tag=$(curl -s https://ghcr.dcnetio.cloud/$1)
+        return
+   fi
+   
+   #get newest docker tag by sorting version numbers (exclude 'latest', 'dev', etc.)
+   newest_docker_tag=$(echo "$docker_tag_list" | grep -E '^v?[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+   
+   #fallback to tags.dcnetio.cloud if still empty
+   if [ -z "$newest_docker_tag" ]; then
+       newest_docker_tag=$(curl -s https://ghcr.dcnetio.cloud/$1)
+   fi
+   
+   #final fallback to 'latest' if all methods failed
+   if [ -z "$newest_docker_tag" ]; then
+       newest_docker_tag="latest"
    fi
 }
 
