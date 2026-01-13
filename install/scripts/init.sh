@@ -378,7 +378,8 @@ function get_docker_newesttag_list(){
    fi
    
    #get newest docker tag by sorting version numbers (exclude 'latest', 'dev', etc.)
-   newest_docker_tag=$(echo "$docker_tag_list" | grep -E '^v?[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+   #use numeric sort for each version component to correctly handle versions like 0.0.69 vs 0.0.149
+   newest_docker_tag=$(echo "$docker_tag_list" | grep -E '^v?[0-9]+\.[0-9]+' | sed 's/^v//' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -n 1)
    
    #fallback to tags.dcnetio.cloud if still empty
    if [ -z "$newest_docker_tag" ]; then
